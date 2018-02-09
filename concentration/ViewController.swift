@@ -25,13 +25,13 @@ class ViewController: UIViewController {
     
     
     
-///////////////// My code starts here so go on
+    //MARK: Typealias
     typealias themeData = (emojis: [String], bgColor: UIColor, cardColor: UIColor)
     
     
-/////////////////////These are variables
 
-    @IBOutlet weak private var flipCountLabel: UITextField!
+    //MARK: Variables
+    @IBOutlet weak private var flipCountLabel: UILabel!
     @IBOutlet private var cardButtons: [UIButton]!
     var numberOfPairsOfCards: Int{
         get{
@@ -55,30 +55,31 @@ class ViewController: UIViewController {
         return themeSet[key]!
     }
     
-
+    
     
     
     private var emojiChoices:[String] = ["👻", "🎃", "🍭", "😈", "🤡", "🍫", "🧟‍♂️", "💀"]
     private var bgColor:UIColor = #colorLiteral(red: 0.2549019754, green: 0.2745098174, blue: 0.3019607961, alpha: 1)
     private var fgColor:UIColor = #colorLiteral(red: 1, green: 0.5763723254, blue: 0, alpha: 1)
     
+    @IBOutlet weak var scoreLabel: UILabel!
     
     
     private lazy var game = Concentration(numberOfPairsOfCards: numberOfPairsOfCards)
-    private var emoji = [Int:String]()
+    private var emoji = [Card:String]()
     
-    
+    //MARK: Methods
     ///////////The UDF may or may not be linked to UI
     ///////////These are my functions
     ///////////Beware before editing
     
     
     private func emoji(for card: Card) -> String {
-        if emoji[card.identifier] == nil, emojiChoices.count > 0 {
+        if emoji[card] == nil, emojiChoices.count > 0 {
             let randomIndex = emojiChoices.count.arc4random
-            emoji[card.identifier] = emojiChoices.remove(at: randomIndex)
+            emoji[card] = emojiChoices.remove(at: randomIndex)
         }
-        return emoji[card.identifier] ?? "?"
+        return emoji[card] ?? "?"
     }
     
     
@@ -99,13 +100,15 @@ class ViewController: UIViewController {
         updateViewFromModel()
         emoji = [:]
         flipCountLabel.textColor = fgColor
+        scoreLabel.textColor = fgColor
     }
     
     
     
     
     func updateViewFromModel() {
-        flipCountLabel.text = "Flip Count : \(game.flipCount)"
+        flipCountLabel.text = "Flips : \(game.flipCount)"
+        scoreLabel.text = "Score : \(game.score)"
         for index in cardButtons.indices{
             let button = cardButtons[index]
             let card = game.cards[index]
